@@ -7,6 +7,7 @@ import { Document, Page, Text, Image,} from "@react-pdf/renderer";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 //cover will act as default cover image of the pdf
 import cover from "../../images/cover.jpg";
+import page from "../../images/page.png";
 
 class Main extends Component {
   constructor() {
@@ -23,14 +24,15 @@ class Main extends Component {
       indexcontent: "", //stores chapter names as index
       pdfname: "",
       pagecount: 0,
-      showeditor: true,
+      showeditor: false,
       showpdfs: false,
-      content: [{}], //stores chaptername and chaptercontent as object
+      content: [{chaptername:"",chaptertext:""}], //stores chaptername and chaptercontent as object
       createdpdfs: [], //stores teacher specific pdfs
       allpdfs: [], //stores all pdfs created by all the teachers
       students: [],
       currentlyassigned: [{}], //stores studentname and id of the students to whom a pdf is assigned as object
-      showpdfcontent:false
+      showpdfcontent:false,
+      showpdfactions:false,
     };
   }
 
@@ -104,11 +106,14 @@ class Main extends Component {
 
   //admin functionality to remove any type of user
   deleteUser = async (id) => {
+    var result = window.confirm("This will remove from database");
+    if(result){
     await fetch("http://localhost:8080/api/deleteUser", {
       method: "POST",
       headers: { UserId: `${id}` },
     });
     this.getRecords();
+  }
   };
 
   //real time storage of chapter content
@@ -148,6 +153,7 @@ class Main extends Component {
   //function to add and move to new page
   addnewpage = async () => {
     const { indexcontent, text, pagecount, content } = this.state;
+    if(indexcontent!=="" && text!==""){
     const contentbody = { chaptername: indexcontent, chaptertext: text };
     this.setState({
       content: [...content, contentbody],
@@ -161,12 +167,18 @@ class Main extends Component {
     localStorage.removeItem("indexcontent");
     localStorage.removeItem("draft");
     localStorage.setItem("pagecount", JSON.stringify(count));
-    
+
+    this.addnewpage();
+
+    this.setState({showpdfactions:true})
+  }
+  else{
+    alert("Please provide some content");
+  }
   };
 
   //function to save a pdf as uploaded and start working on a fresh one
   saveandstartfresh = async () => {
-    this.addnewpage();
     this.uploadpdf();
     localStorage.removeItem("filename");
     localStorage.removeItem("indexcontent");
@@ -179,11 +191,14 @@ class Main extends Component {
 
   //function to delete any pdf
   deletepdf = async (id) => {
+    var result = window.confirm("This will remove from database");
+    if(result){
     await fetch("http://localhost:8080/api/deletepdf", {
       method: "POST",
       headers: { pdfId: `${id}` },
     });
     this.getTeachertasks();
+  }
   };
 
   //function to assign pdfs
@@ -309,26 +324,27 @@ class Main extends Component {
       createdpdfs,
       allpdfs,
       currentlyassigned,
-      showpdfcontent
+      showpdfcontent,
+      showpdfactions,
     } = this.state;
 
     return (
       <div className={styles.main_container}>
         <nav className={styles.navbar}>
-          <h1>Ebook system</h1>
+        <text className={styles.logo}>Academical</text>
           <button className={styles.white_btn} onClick={this.handleLogout}>
             Logout
           </button>
         </nav>
         <p className={styles.welcome}>
-          Welcome {role}, {userName}
+          Welcome to the {role}'s dashboard, {userName}
         </p>
 
         {/* //////////////////////////////////////////////  Student  ///////////////////////////////////////////////////////// */}
 
         {role === "Student" && (
           <div className={styles.body}>
-            <p style={{ fontSize: 36 }}>Tasks assigned to you</p>
+            <p style={{ fontSize: 36,color:"#fff" }}>Tasks assigned to you</p>
             {stutasks.length > 0 ? (
               <>
                 <li>
@@ -345,7 +361,7 @@ class Main extends Component {
                    <li>
                     {t.filename}
                     <span>{t.creator}</span>
-                    <button><a href={"../../../../downloads/"+`${t.filename}.pdf`} download>View</a></button>
+                    <button style={{padding:10,backgroundColor:"orange",border:"none",outline:"none",borderRadius:10,color:"#fff",fontWeight:600}}><a href={"../../../../downloads/"+`${t.filename}.pdf`} download style={{textDecoration:"none",color:"#fff"}}>View</a></button>
                    </li>
                   ))}
                 </ul>
@@ -360,16 +376,19 @@ class Main extends Component {
 
         {role === "Teacher" && (
           <div className={styles.body}>
-
-
-            <div className="btnpack" style={{ marginLeft: "40%" }}>
+            <text style={{fontWeight:600,fontSize:26,color:"#fff"}}>
+              The teacher's dashboard provides you the power feature of creating your own notes, saving and downloading them as pdfs and further assigning them to the students of your choice. Create your notes, save them as draft and continue where you left out anytime anywhere. Our system provides a view of what you have been upto and manage your tasks hastle free.
+            </text>
+            <p style={{fontWeight:"bold",fontSize:26,textAlign:"center",marginTop:40,marginBottom:40,color:"#fff"}}>  Let's get started</p>
+            <div className="btnpack" style={{width:"100%",display:"flex",flexDirection: "row",
+    justifyContent: "center", alignSelf:"center" }}>
               <button
                 className={styles.teacbtn}
                 onClick={() =>
                   this.setState({ showeditor: true, showpdfs: false })
                 }
               >
-                Create a new pdf
+               Start with creating a new pdf
               </button>
               <button
                 className={styles.teacbtn}
@@ -380,38 +399,41 @@ class Main extends Component {
                   })
                 }
               >
-                My pdfs
+                See your created pdfs
               </button>
             </div>
 
 
             {showeditor && (
               <>
-                <label>Enter name of the pdf file to be saved as : </label>
+              <p style={{fontWeight:600,fontSize:26,color:"#fff",marginBottom:40}}>Fill the input fields accordingly and sit back and relax as we convert your input text into chapters under a pdf. Enter the chapter name and respective chapter content and press add new chapter button to start creating a new chapter from a fresh page.</p>
+              <p style={{fontWeight:"bold",fontSize:26,textAlign:"center",marginTop:40,marginBottom:40,color:"#fff"}}>⩔</p>
+                <label style={{fontWeight:"bold",fontSize:20,color:"#fff"}}>Enter name of the pdf file to be saved as : </label>
                 <input
                   type="text/number"
                   value={pdfname}
                   name="pdfname"
                   placeholder="file name"
-                  required
+                  required={true}
                   onChange={this.handleFilename}
                 />
                 <br></br>
 
-                <label>Enter chapter name : </label>
+                <label style={{fontWeight:"bold",fontSize:20,color:"#fff"}}>Enter chapter name : </label>
                 <input
                   type="text/number"
                   name="indexcontent"
                   value={indexcontent}
                   placeholder="chapter name"
-                  required
+                  required={true}
                   onChange={this.handleIndex}
                 />
                 <br></br>
                 
-                <label>Enter chapter content : </label>
+                <label style={{fontWeight:"bold",fontSize:20,color:"#fff"}}>Enter chapter content : </label>
                 <br/>
                 <br/>
+                <div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
                 <textarea
                   type="text/number"
                   wrap="true"
@@ -421,12 +443,23 @@ class Main extends Component {
                   name="text"
                   placeholder={"chapter note"}
                   onChange={this.handleContent}
-                  required
+                  required={true}
+                  style={{outline: "none",
+                    border: "none",
+                    padding: 15,
+                    borderRadius: 10,
+                    backgroundColor: "#edf5f3",
+                    margin: 5,
+                    fontSize: 14}}
                 />
+                <button onClick={this.addnewpage} style={{margin:10,backgroundColor:"#3F00FF",outline:"none",border:"none",borderRadius:50,padding:5,color:"#fff",fontWeight:400}}><p style={{fontSize:40,margin:5,color:"#fff"}}>+<span><img src={page} style={{height:30,width:30,margin:2}} alt="Add this chapter and move to next page"/></span></p>Add this chapter and start new</button>
+                </div>
                 <br></br>
-                <hr />
-
-                <button onClick={this.addnewpage}>Add new page</button>
+                
+                
+                {showpdfactions && (
+                  <>
+                  <p style={{color:"#fff"}}>*Click save as draft if you plan to be inactive for longer durations</p>
                 <PDFDownloadLink document={<this.Rpdf />} fileName={pdfname}>
                   {({ loading }) =>
                     loading ? (
@@ -444,20 +477,22 @@ class Main extends Component {
                   className={styles.blue_btn}
                   onClick={this.saveandstartfresh}
                 >
-                  Save and start with a new pdf
+                  Save as draft and start with a new pdf
                 </button>
+                </>
+                )}
                 <br></br>
                 <hr />
-
-                  <p>Your content so far: </p>
+                  <p  style={{fontWeight:"bold",fontSize:20,color:"#fff"}}>Your content so far: </p>
                   <div style={{display:"flex", flexDirection:"row",overflowX:"auto",overflowY:"hidden"}}>
+                
                 {this.state.content.map((c) => (
-                  
-                  <div style={{minHeight: 0, minWidth: 245,backgroundColor:"#5c5c5c",margin: 10,overflowX:"hidden",overflowY:"auto"}}>
-                    <p>{c.chaptername}</p>
-                    <p>{c.chaptertext}</p>
+                  (c.chaptername!=="" && (
+                  <div style={{height: 400, width: 245,backgroundColor:"#FBFCFC",margin: 10,overflowX:"hidden",overflowY:"auto",padding:10}}>
+                    <p style={{fontWeight:600,textAlign:"center"}}>{c.chaptername}</p>
+                    <p style={{fontWeight:400}}>{c.chaptertext}</p>
                   </div>
-                  
+                  ))
                 ))}
                 </div>
                 <hr />
@@ -478,7 +513,7 @@ class Main extends Component {
                           {createdpdf.filename}
                           <span>
                             <button
-                              style={{ alignSelf: "flex-start" }}
+                              style={{ alignSelf: "flex-start",margin:10,backgroundColor:"#fec20c",padding:10,border:"none",outline:"none",borderRadius:10,color:"#fff",fontWeight:"bold" }}
                               onClick={()=>{
                                 this.setState({showpdfcontent:true})
                               }}
@@ -486,32 +521,36 @@ class Main extends Component {
                               Show content
                             </button>
                             <button
-                              style={{ alignSelf: "flex-start" }}
+                              style={{ alignSelf: "flex-start",margin:10,backgroundColor:"red",padding:10,border:"none",outline:"none",borderRadius:10,color:"#fff",fontWeight:"bold" }}
                               onClick={() => this.deletepdf(createdpdf._id)}
                             >
                               Remove this pdf
                             </button>
-                            <button onClick={()=>{this.setState({content:createdpdf.content,pdfname:createdpdf.filename})}}>Download as pdf</button>
+                            <button style={{ alignSelf: "flex-start",margin:10,backgroundColor:"green",padding:10,border:"none",outline:"none",borderRadius:10,color:"#fff",fontWeight:"bold" }} onClick={()=>{this.setState({content:createdpdf.content,pdfname:createdpdf.filename,showpdfactions:true})}}>
+                              Edit / Download as pdf
+                            </button>
                           </span>
                         </li>
 
                         {showpdfcontent && (
                           <>
                           <button
-                              style={{ alignSelf: "flex-end" }}
+                              style={{ alignSelf: "flex-end" ,border:"none", outline:"none",borderRadius:8,padding:5}}
                               onClick={()=>{
                                 this.setState({showpdfcontent:false})
                               }}
                             >
-                              Hide content
+                              X Hide content
                             </button>
                         <div style={{display:"flex", flexDirection:"row",overflowX:"auto",overflowY:"hidden"}}>
                           
                           {createdpdf.content.map((c)=>(
-                            <div style={{maxHeight:300, minWidth: 245,backgroundColor:"#5c5c5c",margin: 10,overflowX:"hidden",overflowY:"auto"}}>
-                            <p>{c.chaptername}</p>
-                            <p>{c.chaptertext}</p>
+                            (c.chaptername!=="" && (
+                            <div style={{height: 400, width: 245,backgroundColor:"#FBFCFC",margin: 10,overflowX:"hidden",overflowY:"auto",padding:10}}>
+                            <p style={{fontWeight:600,textAlign:"center"}}>{c.chaptername}</p>
+                            <p style={{fontWeight:400}}>{c.chaptertext}</p>
                           </div>
+                            ))
                           ))}
                         </div>
                         </>)}
@@ -547,6 +586,7 @@ class Main extends Component {
                             <p>{e.name}</p>
                           ))}</span>
                           <span>
+                          <p>*Refresh to deselect</p>
                             {students.map((student) => (
                               <li>
                                 {student.firstName}
@@ -554,6 +594,7 @@ class Main extends Component {
                                   <input
                                     type="checkbox"
                                     value={student._id}
+                                    style={{width:20,margin:5}}
                                     onChange={(e) => {
                                       
                                       if(e.target.checked){
@@ -571,7 +612,7 @@ class Main extends Component {
                                 </span>
                               </li>
                             ))}
-                            <button value={createdpdf._id} onClick={(e)=>{this.createassign(e.target.value)}}>Assign</button>
+                            <button value={createdpdf._id} onClick={(e)=>{this.createassign(e.target.value)}} style={{outline:"none",border:"none",backgroundColor:"orange",padding:10,borderRadius:10,color:"#fff",fontWeight:"bold",fontSize:16}}>Assign</button>
                           </span>
                         </li>
                       ))}
@@ -605,8 +646,8 @@ class Main extends Component {
                   {userRecords.map((userRecord) => (
                     <li>
                       {userRecord.firstName} <span>{userRecord.role}</span>
-                      <button onClick={() => this.deleteUser(userRecord._id)}>
-                        X
+                      <button style={{ alignSelf: "flex-start",backgroundColor:"red",padding:10,border:"none",outline:"none",borderRadius:10,color:"#fff",fontWeight:"bold" }} onClick={() => this.deleteUser(userRecord._id)}>
+                        Remove
                       </button>
                     </li>
                   ))}
@@ -633,7 +674,7 @@ class Main extends Component {
                   {allpdfs.map((allpdf) => (
                     <li>
                       <span>{allpdf.filename}  <button
-                              style={{ alignSelf: "flex-start" }}
+                              style={{ alignSelf: "flex-start",margin:10,backgroundColor:"red",padding:10,border:"none",outline:"none",borderRadius:10,color:"#fff",fontWeight:"bold" }}
                               onClick={() => this.deletepdf(allpdf._id)}
                             >
                               Remove this pdf
@@ -643,12 +684,14 @@ class Main extends Component {
                             <p>{e.name}</p>
                           ))}</span>
                       <span>
+                        <p>*Refresh to deselect</p>
                         {students.map((student) => (
                           <li>
                             {student.firstName}
                             <span>
                               <input
                                 type="checkbox"
+                                style={{width:10,margin:5}}
                                 value={student._id}
                                 onChange={(e) => {
                                   if(e.target.checked){
@@ -665,7 +708,7 @@ class Main extends Component {
                             </span>
                           </li>
                         ))}
-                        <button value={allpdf._id} onClick={(e)=>{this.createassign(e.target.value)}}>Assign</button>
+                        <button value={allpdf._id} style={{outline:"none",border:"none",backgroundColor:"orange",padding:10,borderRadius:10,color:"#fff",fontWeight:"bold",fontSize:16}} onClick={(e)=>{this.createassign(e.target.value)}}>Assign</button>
                       </span>
                     </li>
                   ))}

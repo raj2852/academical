@@ -15,7 +15,8 @@ const Signup = () => {
 
 	const handleChange = ({ currentTarget: input }) => {
 		setData({ ...data, [input.name]: input.value });
-	};
+		[input.id].style.borderColor = "rgb(0,139,139)"
+	};	
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -38,8 +39,9 @@ const Signup = () => {
 	return (
 		<>
 		<div className={styles.header}>
-        		<text className={styles.logo}>Ebook System</text>
-      		</div>
+        		<text className={styles.logo}>Academical</text>
+							
+			</div>
 		<div className={styles.signup_container}>
 			<div className={styles.signup_form_container}>
 				<div className={styles.left}>
@@ -62,17 +64,8 @@ const Signup = () => {
 							required
 							className={styles.input}
 						/>
-						{/* <input
-							type="text"
-							placeholder="Role"
-							name="role"
-							onChange={handleChange}
-							value={data.role}
-							required
-							className={styles.input}
-						/> */}
-						<label style={{alignSelf:"start",marginLeft:"20%"}}>Role</label>
-						<label>
+						<label style={{alignSelf:"start",marginLeft:"17%", color:"#5c5c5c"}}>Select Role : 
+						
 						<input
 						type="radio"
 						name="role"
@@ -80,16 +73,16 @@ const Signup = () => {
 						value={"Student"}
 						required
 						/>
-						Student</label>
-						<label>
+						Student
+						
 						<input
 						type="radio"
 						name="role"
 						onChange={handleChange}
 						value={"Teacher"}
 						required/>
-						Teacher</label>
-						<label>
+						Teacher
+						
 						<input
 						type="radio"
 						name="role"
@@ -109,7 +102,7 @@ const Signup = () => {
 						/>
 						<input
 							type="password"
-							placeholder="Password"
+							placeholder="Password atleast 8 characters long"
 							name="password"
 							onChange={handleChange}
 							value={data.password}

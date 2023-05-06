@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
+import bglogo from "../../images/bglogo.png";
 
 const Login = () => {
 	const [data, setData] = useState({ email: "", password: "" });
@@ -32,9 +33,18 @@ const Login = () => {
 	return (
 		<>
 		<div className={styles.header}>
-        		<text className={styles.logo}>Ebook System</text>
-      		</div>
-		<div className={styles.login_container}>
+        		<text className={styles.logo}>Academical</text>
+				<a href="#form"><button style={{paddingBottom:10, paddingTop: 10,borderWidth:2,borderColor:"rgb(71, 20, 167)",borderStyle:"solid",backgroundColor:"transparent",borderRadius:10,color:"rgb(71, 20, 167)"}}>GET STARTED</button></a>
+				
+			</div>
+			<div style={{backgroundColor: "#f5f5f5", display:"flex",flexDirection:"row",textAlign:"justify", padding:15, color:"rgb(71, 20, 167)",justifyContent:"space-around",paddingTop:40}}>
+			<text style={{fontWeight:600,fontSize:26,width:"45%"}}>Online, fully-managable and maintainable academics management system to always keep a bird's eye view into the education and task management system of your organization. Academical's suite provides you a complete platform to manage teachers, students and admins with proper demarcation of authorization and responsibility.</text>
+			<img src={bglogo} style={{margin:10,height:"40%",width:"30%"}}/>
+			</div>
+			
+			
+		<div className={styles.login_container} id="form">
+		
 			
 			<div className={styles.login_form_container}>
 				<div className={styles.left}>

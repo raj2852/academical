@@ -1,17 +1,20 @@
 .navbar {
 	width: 100%;
 	height: auto;
-	background-color: cadetblue;
+	background-color: rgb(78, 0, 141);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
 
- .navbar h1 {
-	color: white;
-	font-size: 30px;
-	margin-left: 20px;
-} 
+  .logo{
+	color: rgb(255, 255, 255);
+	font-size: 40px;
+	text-align: center;
+	font-weight: bolder;
+	letter-spacing: 0.2rem;
+	padding:10px
+  }
 
 .white_btn {
 	border: none;
@@ -30,23 +33,41 @@
 	font-size: 40px;
 	margin: 20px;
 	font-weight:bold;
+	color: #fff;
+}
+
+.main_container{
+	background: linear-gradient(#AE58F5,#797ef6,#e5d0ff);
 }
 
 .body{
 	margin:20px;
+	margin-bottom: 0;
 	position:relative;
+	min-height: 100vh;
+	padding:40px
 }
 .teacbtn{
-	background-color: azure;
+	font-weight: bold;
+	background-color: rgb(55, 25, 102);
 	border-width: 2px;
 	border-style: solid;
-	border-color: aqua;
+	color: #fff;
 	border-radius: 12px;
 	margin:10px;
-	padding:15px
+	padding:15px;
+	border-color: rgb(55, 25, 102);
+}
+.teacbtn:focus{
+	border-style: solid;
+	border-width: 2px;
+	border-color: rgb(255, 255, 255);
+	color: rgb(55, 25, 102);
+	background-color: #fff;
 }
 ul{
 	list-style-type: none;
+	padding-inline-start: 0
 }
 li {
 	background-color: #fff;
@@ -56,7 +77,6 @@ li {
 	justify-content: space-between;
 	position: relative;
 	padding: 10px;
-	margin: 10px 0;
   }
   form {
 	display: flex;
@@ -74,29 +94,32 @@ input {
 	font-size: 14px;
 }
 .green_btn {
+	color: #fff;
 	border: none;
 	outline: none;
 	padding: 12px 0;
-	background-color: rgb(160, 253, 97);
-	border-radius: 20px;
+	background-color: rgb(0, 163, 95);
+	border-radius: 15px;
 	width: 180px;
 	font-weight: bold;
-	font-size: 14px;
+	font-size: 16px;
 	cursor: pointer;
 }
 .blue_btn {
+	color: #fff;
 	border: none;
 	outline: none;
 	padding: 12px;
 	margin-left: 10px;
-	background-color: rgb(137, 240, 253);
-	border-radius: 20px;
+	background-color: rgb(0, 119, 134);
+	border-radius: 15px;
 	width: auto;
 	font-weight: bold;
-	font-size: 14px;
+	font-size: 16px;
 	cursor: pointer;
 }
 .teacheader{
+	color:#fff;
 	font-size: 30px;
 	letter-spacing: 0.2rem;
 	font-weight: bold;
@@ -116,6 +139,6 @@ input {
     padding: 10;
     flex-grow: 1;
   }
-  input:checked{
+  input[type='checkbox']:checked{
 	display: none;
   }
