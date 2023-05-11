@@ -23,8 +23,8 @@ const Signup = () => {
 		try {
 			const url = "http://localhost:8080/api/users";
 			const { data: res } = await axios.post(url, data);
-			navigate("/login");
-			console.log(res.message);
+			localStorage.setItem("token", res.data);
+			window.location = "/";
 		} catch (error) {
 			if (
 				error.response &&
@@ -47,7 +47,7 @@ const Signup = () => {
 				<div className={styles.left}>
 					<h1>Already have an account? Sign in</h1>
 					<Link to="/login">
-						<button type="button" className={styles.white_btn}>
+						<button type="button" class="btn btn-secondary" style={{backgroundColor:"#fff",color:"green"}}>
 							Sign in
 						</button>
 					</Link>
@@ -65,7 +65,8 @@ const Signup = () => {
 							className={styles.input}
 						/>
 						<label style={{alignSelf:"start",marginLeft:"17%", color:"#5c5c5c"}}>Select Role : 
-						
+						<br/>
+						<div style={{display:"inline",alignItems:"center",alignSelf:"center"}}>
 						<input
 						type="radio"
 						name="role"
@@ -74,7 +75,7 @@ const Signup = () => {
 						required
 						/>
 						Student
-						
+						<br/>
 						<input
 						type="radio"
 						name="role"
@@ -82,14 +83,16 @@ const Signup = () => {
 						value={"Teacher"}
 						required/>
 						Teacher
-						
+						<br/>
 						<input
 						type="radio"
 						name="role"
 						onChange={handleChange}
 						value={"Admin"}
 						required/>
-						Admin</label>
+						Admin
+						</div>
+						</label>
 						
 						<input
 							type="email"
@@ -110,7 +113,7 @@ const Signup = () => {
 							className={styles.input}
 						/>
 						{error && <div className={styles.error_msg}>{error}</div>}
-						<button type="submit" className={styles.green_btn}>
+						<button type="submit" class="btn btn-primary">
 							Sign Up
 						</button>
 					</form>

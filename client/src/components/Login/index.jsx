@@ -34,7 +34,7 @@ const Login = () => {
 		<>
 		<div className={styles.header}>
         		<text className={styles.logo}>Academical</text>
-				<a href="#form"><button style={{paddingBottom:10, paddingTop: 10,borderWidth:2,borderColor:"rgb(71, 20, 167)",borderStyle:"solid",backgroundColor:"transparent",borderRadius:10,color:"rgb(71, 20, 167)"}}>GET STARTED</button></a>
+				<a href="#form"><button type="button" class="btn btn-outline-primary">Get started</button></a>
 				
 			</div>
 			<div style={{backgroundColor: "#f5f5f5", display:"flex",flexDirection:"row",textAlign:"justify", padding:15, color:"rgb(71, 20, 167)",justifyContent:"space-around",paddingTop:40}}>
@@ -69,7 +69,7 @@ const Login = () => {
 							className={styles.input}
 						/>
 						{error && <div className={styles.error_msg}>{error}</div>}
-						<button type="submit" className={styles.green_btn}>
+						<button type="submit" class="btn btn-primary">
 							Sign In
 						</button>
 					</form>
@@ -77,7 +77,7 @@ const Login = () => {
 				<div className={styles.right}>
 					<h1>Don't have an account yet? Sign up</h1>
 					<Link to="/signup">
-						<button type="button" className={styles.white_btn}>
+						<button type="button" class="btn btn-secondary" style={{backgroundColor:"#fff",color:"green"}}>
 							Sign Up
 						</button>
 					</Link>
