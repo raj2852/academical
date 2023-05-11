@@ -17,7 +17,7 @@ router.post("/", async(req,res) => {
            const user = await User.findOne({_id:userid});
            if(user!==null){
            //console.log(user); 
-           const body = {filename:docname.filename, creator: docname.creator};
+           const body = {filename:docname.filename, creator: docname.creator, fileid: docname._id};
            //console.log(user.pdfs);
            const pdf = user.pdfs.concat(body);
            //console.log(typeof(body));

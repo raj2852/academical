@@ -15,6 +15,7 @@ const findUploadsRoutes = require("./routes/findUploads");
 const deletepdfRoutes = require("./routes/deletepdf");
 const assignRoutes = require("./routes/assign");
 const getstutasksRoutes = require("./routes/getstutasks");
+const pdfrenderRoutes = require("./routes/pdfrender");
 
 // database connection
 connection();
@@ -42,6 +43,7 @@ app.use("/api/findUploads", findUploadsRoutes);
 app.use("/api/deletepdf", deletepdfRoutes);
 app.use("/api/assign", assignRoutes);
 app.use("/api/getstutasks", getstutasksRoutes);
+app.use("/api/renderpdf", pdfrenderRoutes);
 
 const port = process.env.PORT || 8080;
 app.listen(port, console.log(`Listening on port ${port}...`));
