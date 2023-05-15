@@ -134,22 +134,6 @@ class Main extends Component {
     localStorage.setItem("filename", input.value);
   };
 
-  //function to handle pdf's content upload
-  uploadpdf = async () => {
-    const { pdfname, content, userName, userId } = this.state;
-    const date = new Date();
-    const body = {
-      filename: pdfname,
-      creator: userName,
-      creatorid: userId,
-      dateofupload: date,
-      content,
-    };
-    const url = "http://localhost:8080/api/upload";
-    const { data: res } = await axios.post(url, body);
-    this.getTeachertasks();
-  };
-
   //function to add and move to new page
   addnewpage = async () => {
     const { indexcontent, text, pagecount, content } = this.state;
@@ -178,7 +162,6 @@ class Main extends Component {
 
   //function to save a pdf as uploaded and start working on a fresh one
   saveandstartfresh = async () => {
-    this.uploadpdf();
     localStorage.removeItem("filename");
     localStorage.removeItem("indexcontent");
     localStorage.removeItem("draft");
@@ -187,6 +170,30 @@ class Main extends Component {
     window.location.reload();
     this.getTeachertasks();
   };
+
+  //function to handle pdf's content upload
+  uploadpdf = async () => {
+    const { pdfname, content, userName, userId } = this.state;
+    const date = new Date();
+    const body = {
+      filename: pdfname,
+      creator: userName,
+      creatorid: userId,
+      dateofupload: date,
+      content,
+    };
+    const url = "http://localhost:8080/api/upload";
+    const res = await axios.post(url, body);
+    console.log(res);
+    if(res.status == 201){
+      this.saveandstartfresh();
+    this.getTeachertasks();
+    }
+    else if(res.status == 200){
+      alert("You already have a pdf by this name, kindly choose a different name");
+    }
+  };
+
 
   //function to delete any pdf
   deletepdf = async (id) => {
@@ -341,7 +348,6 @@ class Main extends Component {
       createdpdfs,
       allpdfs,
       currentlyassigned,
-      showpdfcontent,
       showpdfactions,
     } = this.state;
 
@@ -645,7 +651,7 @@ class Main extends Component {
                             class="btn btn-success"
                             style={{ margin: 5, color: "#fff" }}
                             onClick={() => {
-                              this.saveandstartfresh();
+                              this.uploadpdf();
                             }}
                           >
                             Download as pdf
@@ -657,7 +663,7 @@ class Main extends Component {
                       type="button"
                       class="btn btn-primary"
                       style={{ margin: 5, color: "#fff" }}
-                      onClick={this.saveandstartfresh}
+                      onClick={this.uploadpdf}
                     >
                       Save as draft and start with a new pdf
                     </button>
@@ -746,7 +752,7 @@ class Main extends Component {
                                       });
                                     }}
                                   >
-                                    Show content
+                                    Show / download content
                                   </button>
                                   <button
                                     type="button"
@@ -766,14 +772,14 @@ class Main extends Component {
                                       this.setState({
                                         content: createdpdf.content,
                                         pdfname: createdpdf.filename,
-                                        showpdfactions: true,
+                                        showpdfactions: false,
                                       });
                                       alert(
-                                        "Please delete the previous version if document is updated"
+                                        "Please note: you need to save with a new name if document is edited/updated"
                                       );
                                     }}
                                   >
-                                    Edit / Download as pdf
+                                    Edit pdf
                                   </button>
                                 </span>
                               </td>
