@@ -23,6 +23,7 @@ class Main extends Component {
       text: "", //stores main content of each pdf
       indexcontent: "", //stores chapter names as index
       pdfname: "",
+      category:"",
       pagecount: 0,
       showeditor: false,
       showpdfs: false,
@@ -33,6 +34,13 @@ class Main extends Component {
       currentlyassigned: [{}], //stores studentname and id of the students to whom a pdf is assigned as object
       showpdfcontent: false,
       showpdfactions: false,
+      pdfexists:true,
+      assigninfo:false,
+      assignbg:"",
+      assigninfomessage:"",
+      action:false,
+      actionbg:"",
+      actionmessage:""
     };
   }
 
@@ -45,16 +53,18 @@ class Main extends Component {
     const draftcontent = localStorage.getItem("draft");
     const index = localStorage.getItem("indexcontent");
     const filename = localStorage.getItem("filename");
+    const contcategory = localStorage.getItem("category");
     const pages = JSON.parse(localStorage.getItem("pagecount"));
     const a = JSON.parse(localStorage.getItem("contentsofar"));
     console.log(a);
     //set state if local storage is present else show default state initialization value
-    const { text, pdfname, indexcontent, pagecount, content } = this.state;
+    const { text, pdfname, indexcontent, pagecount, content, category } = this.state;
     this.setState({ text: draftcontent ? draftcontent : text });
     this.setState({ indexcontent: index ? index : indexcontent });
     this.setState({ pdfname: filename ? filename : pdfname });
     this.setState({ pagecount: pages ? pages : pagecount });
     this.setState({ content: a ? a : content });
+    this.setState({ category: contcategory ? contcategory : category });
   }
 
   //function to get credentials of the current logged user
@@ -100,8 +110,17 @@ class Main extends Component {
       method: "GET",
       headers: { userid: userId },
     });
-    const tasks = await response.json();
-    this.setState({ stutasks: tasks.tasks });
+    const tasks = await response.json();  
+    const unique = [];
+          const result = tasks.tasks.filter(e =>{
+             const isduplicate = unique.includes(e.fileid);
+             if(!isduplicate){
+              unique.push(e.fileid);
+              return true;
+             }
+             return false;
+          });      
+    this.setState({ stutasks: result });
   };
 
   //admin functionality to remove any type of user
@@ -134,6 +153,12 @@ class Main extends Component {
     localStorage.setItem("filename", input.value);
   };
 
+  //real time storage of content category
+  handleCategory = ({ currentTarget: input }) => {
+    this.setState({ [input.name]: input.value });
+    localStorage.setItem("category", input.value);
+  }
+
   //function to add and move to new page
   addnewpage = async () => {
     const { indexcontent, text, pagecount, content } = this.state;
@@ -153,10 +178,10 @@ class Main extends Component {
       localStorage.setItem("pagecount", JSON.stringify(count));
 
       this.addnewpage();
-
+      this.setState({action:false});
       this.setState({ showpdfactions: true });
     } else {
-      alert("Please provide some content");
+      this.setState({action:true,actionbg:"red",actionmessage:"Please provide some content"})
     }
   };
 
@@ -167,33 +192,34 @@ class Main extends Component {
     localStorage.removeItem("draft");
     localStorage.removeItem("contentsofar");
     localStorage.removeItem("pagecount");
+    localStorage.removeItem("category");
     window.location.reload();
     this.getTeachertasks();
   };
 
   //function to handle pdf's content upload
   uploadpdf = async () => {
-    const { pdfname, content, userName, userId } = this.state;
+    const { pdfname,category, content, userName, userId } = this.state;
     const date = new Date();
     const body = {
       filename: pdfname,
       creator: userName,
       creatorid: userId,
       dateofupload: date,
+      category,
       content,
     };
     const url = "http://localhost:8080/api/upload";
     const res = await axios.post(url, body);
     console.log(res);
-    if(res.status == 201){
+    if (res.status == 201) {
+      this.setState({action:false})
       this.saveandstartfresh();
-    this.getTeachertasks();
-    }
-    else if(res.status == 200){
-      alert("You already have a pdf by this name, kindly choose a different name");
+      this.getTeachertasks();
+    } else if (res.status == 200) {
+      this.setState({action:true,actionbg:"red",actionmessage:"You already have a pdf with this title, please enter a different one"})
     }
   };
-
 
   //function to delete any pdf
   deletepdf = async (id) => {
@@ -211,14 +237,20 @@ class Main extends Component {
   createassign = async (id) => {
     const { currentlyassigned } = this.state;
     const docid = id;
-    await fetch("http://localhost:8080/api/assign", {
+    const res = await fetch("http://localhost:8080/api/assign", {
       method: "POST",
       headers: {
         pdfId: docid,
         aud: JSON.stringify(currentlyassigned),
       },
     });
+    if(res.status == 200){
+      this.setState({assigninfo:true,assignbg:"green",assigninfomessage:"Successfully assigned"})
     this.getTeachertasks();
+    }
+    else{
+      this.setState({assigninfo:true,assignbg:"red",assigninfomessage:"Could not be assigned"})
+    }
   };
 
   //function to log a user out
@@ -237,8 +269,9 @@ class Main extends Component {
       const data = await renderthis.json();
       console.log(data.data);
       if (data.message == "Pdf not found") {
-        alert("This pdf seems to be removed");
+        this.setState({pdfexists:false})
       } else {
+        this.setState({pdfexists:true})
         this.setState({ content: data.data, read: true });
       }
     } catch (e) {
@@ -339,6 +372,7 @@ class Main extends Component {
       role,
       text,
       pdfname,
+      category,
       indexcontent,
       userRecords,
       stutasks,
@@ -349,6 +383,13 @@ class Main extends Component {
       allpdfs,
       currentlyassigned,
       showpdfactions,
+      pdfexists,
+      assigninfo,
+      assigninfomessage,
+      assignbg,
+      action,
+      actionbg,
+      actionmessage
     } = this.state;
 
     return (
@@ -359,27 +400,28 @@ class Main extends Component {
             Logout
           </button>
         </nav>
-        <p className={styles.welcome}>
-          Welcome to the {role}'s dashboard, {userName}
-        </p>
+        <p className={styles.welcome}>Welcome to your dashboard, {userName}</p>
 
         {/* //////////////////////////////////////////////  Student  ///////////////////////////////////////////////////////// */}
 
         {role === "Student" && (
           <div className={styles.body}>
-            <p style={{ fontSize: 36, color: "#fff" }}>Tasks assigned to you</p>
+            <p style={{ fontSize: 36, color: "#5c5c5c" }}>Tasks assigned to you</p>
             {stutasks.length > 0 ? (
               <>
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Pdf Name
                       </th>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
+                        Pdf Category
+                      </th>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Assigned By
                       </th>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Actions
                       </th>
                     </tr>
@@ -388,8 +430,9 @@ class Main extends Component {
                     {stutasks.map((t) => (
                       <>
                         <tr>
-                          <td style={{ color: "#fff" }}>{t.filename}</td>
-                          <td style={{ color: "#fff" }}>{t.creator}</td>
+                          <td style={{ color: "#5c5c5c" }}>{t.filename}</td>
+                          <td style={{ color: "#5c5c5c" }}>{t.category}</td>
+                          <td style={{ color: "#5c5c5c" }}>{t.creator}</td>
                           <td>
                             <button
                               type="button"
@@ -423,7 +466,7 @@ class Main extends Component {
               aria-hidden="true"
             >
               <div class="modal-dialog modal-xl" style={{ height: "90%" }}>
-                <div class="modal-content" style={{ height: "100%" }}>
+                {pdfexists ? (<div class="modal-content" style={{ height: "100%" }}>
                   <div class="modal-header">
                     <button
                       type="button"
@@ -443,7 +486,45 @@ class Main extends Component {
                       <this.Rpdf />
                     </PDFViewer>
                   </div>
-                </div>
+                  <PDFDownloadLink
+                              document={<this.Rpdf />}
+                            style={{alignSelf:"center"}}>
+                              {({ loading }) =>
+                                loading ? (
+                                  <button
+                                    type="button"
+                                    class="btn btn-success"
+                                    style={{ margin: 5, color: "#fff" }}
+                                  >
+                                    Loading Document...
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    class="btn btn-success"
+                                    style={{ margin: 5, color: "#fff" }}
+                                  >
+                                    Download as pdf
+                                  </button>
+                                )
+                              }
+                            </PDFDownloadLink>
+                </div>)
+                :(
+                  <div class="modal-content" style={{ height: "100%" }}>
+                  <div class="modal-header">
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <p style={{textAlign:"center", color:"#5c5c5c", fontSize: 40}}>This pdf seems to be removed</p>
+                    </div>
+                    </div>
+                )}
               </div>
             </div>
           </div>
@@ -453,7 +534,7 @@ class Main extends Component {
 
         {role === "Teacher" && (
           <div className={styles.body}>
-            <text style={{ fontWeight: 600, fontSize: 26, color: "#fff" }}>
+            <text style={{ fontWeight: 300, fontSize: 26, color: "#5c5c5c" }}>
               The teacher's dashboard provides you the power feature of creating
               your own notes, saving and downloading them as pdfs and further
               assigning them to the students of your choice. Create your notes,
@@ -468,7 +549,7 @@ class Main extends Component {
                 textAlign: "center",
                 marginTop: 40,
                 marginBottom: 40,
-                color: "#fff",
+                color: "#5c5c5c",
               }}
             >
               {" "}
@@ -509,9 +590,9 @@ class Main extends Component {
               <>
                 <p
                   style={{
-                    fontWeight: 600,
+                    fontWeight: 300,
                     fontSize: 26,
-                    color: "#fff",
+                    color: "#5c5c5c",
                     marginBottom: 40,
                   }}
                 >
@@ -528,13 +609,13 @@ class Main extends Component {
                     textAlign: "center",
                     marginTop: 40,
                     marginBottom: 40,
-                    color: "#fff",
+                    color: "#024db1",
                   }}
                 >
                   ⩔
                 </p>
                 <label
-                  style={{ fontWeight: "bold", fontSize: 20, color: "#fff" }}
+                  style={{ fontWeight: "bold", fontSize: 20, color: "#5c5c5c" }}
                 >
                   Enter name of the pdf file to be saved as :{" "}
                 </label>
@@ -549,7 +630,7 @@ class Main extends Component {
                 <br></br>
 
                 <label
-                  style={{ fontWeight: "bold", fontSize: 20, color: "#fff" }}
+                  style={{ fontWeight: "bold", fontSize: 20, color: "#5c5c5c" }}
                 >
                   Enter chapter name :{" "}
                 </label>
@@ -562,9 +643,19 @@ class Main extends Component {
                   onChange={this.handleIndex}
                 />
                 <br></br>
+                <label style={{ fontWeight: "bold", fontSize: 20, color: "#5c5c5c" }}>Enter content category :{" "}</label>
+                <input
+                  type="text/number"
+                  name="category"
+                  value={category}
+                  placeholder="category"
+                  required={true}
+                  onChange={this.handleCategory}
+                />
+                <br></br>
 
                 <label
-                  style={{ fontWeight: "bold", fontSize: 20, color: "#fff" }}
+                  style={{ fontWeight: "bold", fontSize: 20, color: "#5c5c5c" }}
                 >
                   Enter chapter content :{" "}
                 </label>
@@ -624,11 +715,16 @@ class Main extends Component {
                     Add this chapter and start new
                   </button>
                 </div>
+                {action && (
+                  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    {actionmessage}
+                  </div>
+                )}
                 <br></br>
 
                 {showpdfactions && (
                   <>
-                    <p style={{ color: "#fff" }}>
+                    <p style={{ color: "#5c5c5c" }}>
                       *Click save as draft if you plan to be inactive for longer
                       durations
                     </p>
@@ -671,7 +767,9 @@ class Main extends Component {
                 )}
                 <br></br>
                 <hr />
-                <p style={{ fontWeight: "bold", fontSize: 20, color: "#fff" }}>
+                <p
+                  style={{ fontWeight: "bold", fontSize: 20, color: "#5c5c5c" }}
+                >
                   Your content so far:{" "}
                 </p>
                 <button
@@ -725,10 +823,10 @@ class Main extends Component {
                     <table class="table">
                       <thead>
                         <tr>
-                          <th scope="col" style={{ color: "#fff" }}>
+                          <th scope="col" style={{ color: "#5c5c5c" }}>
                             Pdf Name
                           </th>
-                          <th scope="col" style={{ color: "#fff" }}>
+                          <th scope="col" style={{ color: "#5c5c5c" }}>
                             Actions
                           </th>
                         </tr>
@@ -754,6 +852,7 @@ class Main extends Component {
                                   >
                                     Show / download content
                                   </button>
+
                                   <button
                                     type="button"
                                     class="btn btn-danger"
@@ -774,9 +873,7 @@ class Main extends Component {
                                         pdfname: createdpdf.filename,
                                         showpdfactions: false,
                                       });
-                                      alert(
-                                        "Please note: you need to save with a new name if document is edited/updated"
-                                      );
+                                      this.setState({action:true,actionbg:"red",actionmessage:"Please note: you need to save with a new name if document is edited/updated"})                                      
                                     }}
                                   >
                                     Edit pdf
@@ -800,7 +897,7 @@ class Main extends Component {
                         class="modal-dialog modal-xl"
                         style={{ height: "90%" }}
                       >
-                        <div class="modal-content" style={{ height: "100%" }}>
+                        <div class="modal-content" style={{ height: "100%"}}>
                           <div class="modal-header">
                             <button
                               type="button"
@@ -818,8 +915,34 @@ class Main extends Component {
                               }}
                             >
                               <this.Rpdf />
+                              
                             </PDFViewer>
+                            
                           </div>
+                          <PDFDownloadLink
+                              document={<this.Rpdf />}
+                              style={{alignSelf:"center"}}
+                            >
+                              {({ loading }) =>
+                                loading ? (
+                                  <button
+                                    type="button"
+                                    class="btn btn-success"
+                                    style={{ margin: 5, color: "#fff" }}
+                                  >
+                                    Loading Document...
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    class="btn btn-success"
+                                    style={{ margin: 5, color: "#fff" }}
+                                  >
+                                    Download as pdf
+                                  </button>
+                                )
+                              }
+                            </PDFDownloadLink>
                         </div>
                       </div>
                     </div>
@@ -837,13 +960,13 @@ class Main extends Component {
                     <table class="table">
                       <thead>
                         <tr>
-                          <th scope="col" style={{ color: "#fff" }}>
+                          <th scope="col" style={{ color: "#5c5c5c" }}>
                             Pdf Name
                           </th>
-                          <th scope="col" style={{ color: "#fff" }}>
+                          <th scope="col" style={{ color: "#5c5c5c" }}>
                             Assigned To
                           </th>
-                          <th scope="col" style={{ color: "#fff" }}>
+                          <th scope="col" style={{ color: "#5c5c5c" }}>
                             Action
                           </th>
                         </tr>
@@ -852,21 +975,21 @@ class Main extends Component {
                         {createdpdfs.map((createdpdf) => (
                           <>
                             <tr>
-                              <td style={{ color: "#fff" }}>
+                              <td style={{ color: "#5c5c5c" }}>
                                 {createdpdf.filename}{" "}
                               </td>
-                              <td style={{ color: "#fff" }}>
+                              <td style={{ color: "#5c5c5c" }}>
                                 {createdpdf.assignedto.map((e) => (
                                   <p>{e.name}</p>
                                 ))}
                               </td>
-                              <td style={{ color: "#fff" }}>
+                              <td style={{ color: "#5c5c5c" }}>
                                 <p>*Refresh to deselect</p>
                                 {students.map((student) => (
                                   <li
                                     style={{
                                       backgroundColor: "transparent",
-                                      color: "#fff",
+                                      color: "#5c5c5c",
                                     }}
                                   >
                                     {student.firstName}
@@ -910,6 +1033,11 @@ class Main extends Component {
                                 >
                                   Assign
                                 </button>
+                                {assigninfo && (
+                              <div class="alert alert-info alert-dismissible fade show" role="alert" style={{margin:10,width:"50%",alignSelf:"center"}}>
+                                <p style={{textAlign:"center"}}>{assigninfomessage}</p>
+                              </div>
+                            )}
                               </td>
                             </tr>
                           </>
@@ -935,13 +1063,13 @@ class Main extends Component {
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Name
                       </th>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Role
                       </th>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Action
                       </th>
                     </tr>
@@ -949,10 +1077,10 @@ class Main extends Component {
                   <tbody>
                     {userRecords.map((userRecord) => (
                       <tr>
-                        <td style={{ color: "#fff" }}>
+                        <td style={{ color: "#5c5c5c" }}>
                           {userRecord.firstName}
                         </td>
-                        <td style={{ color: "#fff" }}>{userRecord.role}</td>
+                        <td style={{ color: "#5c5c5c" }}>{userRecord.role}</td>
                         <td>
                           <button
                             type="button"
@@ -980,19 +1108,22 @@ class Main extends Component {
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Pdf Name
                       </th>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
+                        Pdf Category
+                      </th>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Actions
                       </th>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Created By
                       </th>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Assigned To
                       </th>
-                      <th scope="col" style={{ color: "#fff" }}>
+                      <th scope="col" style={{ color: "#5c5c5c" }}>
                         Assign
                       </th>
                     </tr>
@@ -1000,7 +1131,8 @@ class Main extends Component {
                   <tbody>
                     {allpdfs.map((allpdf) => (
                       <tr>
-                        <td style={{ color: "#fff" }}>{allpdf.filename} </td>
+                        <td style={{ color: "#5c5c5c" }}>{allpdf.filename} </td>
+                        <td style={{ color: "#5c5c5c" }}>{allpdf.category}</td>
                         <td>
                           <span>
                             <button
@@ -1012,34 +1144,35 @@ class Main extends Component {
                             >
                               Remove this pdf
                             </button>
+                            <br/>
                             <button
                               type="button"
                               class="btn btn-info"
                               data-bs-toggle="modal"
                               data-bs-target="#exampleModal"
-                              style={{ color: "#fff", margin: 5 }}
+                              style={{ color: "#fff", marginTop:5}}
                               onClick={() => {
                                 this.renderpdf(allpdf._id);
                               }}
                             >
-                              View pdf
+                              View / Download pdf
                             </button>
                           </span>
                         </td>
-                        <td style={{ color: "#fff" }}>{allpdf.creator}</td>
-                        <td style={{ color: "#fff" }}>
+                        <td style={{ color: "#5c5c5c" }}>{allpdf.creator}</td>
+                        <td style={{ color: "#5c5c5c" }}>
                           {allpdf.assignedto.map((e) => (
                             <p>{e.name}</p>
                           ))}
                         </td>
-                        <td style={{ color: "#fff" }}>
+                        <td style={{ color: "#5c5c5c" }}>
                           <span>
                             <p>*Refresh to deselect</p>
                             {students.map((student) => (
                               <li
                                 style={{
                                   backgroundColor: "transparent",
-                                  color: "#fff",
+                                  color: "#5c5c5c",
                                 }}
                               >
                                 {student.firstName}
@@ -1080,6 +1213,11 @@ class Main extends Component {
                             >
                               Assign
                             </button>
+                            {assigninfo && (
+                              <div class="alert alert-info alert-dismissible fade show" role="alert" style={{margin:10,width:"50%",alignSelf:"center"}}>
+                              <p style={{textAlign:"center"}}>{assigninfomessage}</p>
+                            </div>
+                            )}
                           </span>
                         </td>
                       </tr>
@@ -1115,6 +1253,30 @@ class Main extends Component {
                           <this.Rpdf />
                         </PDFViewer>
                       </div>
+                      <PDFDownloadLink
+                              document={<this.Rpdf />}
+                              style={{alignSelf:"center"}}
+                            >
+                              {({ loading }) =>
+                                loading ? (
+                                  <button
+                                    type="button"
+                                    class="btn btn-success"
+                                    style={{ margin: 5, color: "#fff" }}
+                                  >
+                                    Loading Document...
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    class="btn btn-success"
+                                    style={{ margin: 5, color: "#fff" }}
+                                  >
+                                    Download as pdf
+                                  </button>
+                                )
+                              }
+                            </PDFDownloadLink>
                     </div>
                   </div>
                 </div>

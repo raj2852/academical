@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
 	role: { type: String, required: true },
 	email: { type: String, required: true },
 	password: { type: String, required: true },
-	pdfs: [{filename: {type:String},creator: {type:String}, fileid: {type:String}}]
+	pdfs: [{filename: {type:String},category: {type:String},creator: {type:String}, fileid: {type:String}}]
 });
 
 userSchema.methods.generateAuthToken = function () {
