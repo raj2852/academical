@@ -18,6 +18,16 @@ html{
 	font-weight: bolder;
 	letter-spacing: 0.2rem;
   }
+  .introtext{
+	font-weight: 600;
+	 font-size: 26px;
+	 color:  rgb(71, 20, 167);
+  }
+  .bglogo{
+	position: relative;
+	height: 100%;
+	width: 100%;
+  }
 .login_container {
 	width: 100%;
 	min-height: 100vh;

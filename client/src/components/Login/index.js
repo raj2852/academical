@@ -40,26 +40,21 @@ const Login = () => {
           </button>
         </a>
       </div>
-      <div
-        style={{
-          backgroundColor: "#f5f5f5",
-          display: "flex",
-          flexDirection: "row",
-          textAlign: "justify",
-          padding: 15,
-          color: "rgb(71, 20, 167)",
-          justifyContent: "space-around",
-          paddingTop: 40,
-        }}
-      >
-        <text style={{ fontWeight: 600, fontSize: 26, width: "45%" }}>
-          Online, fully-managable and maintainable academics management system
-          to always keep a bird's eye view into the education and task
-          management system of your organization. Academical's suite provides
-          you a complete platform to manage teachers, students and admins with
-          proper demarcation of authorization and responsibility.
-        </text>
-        <img src={bglogo} style={{ margin: 10, height: "40%", width: "30%" }} />
+      <div className="container" style={{marginTop:10}}>
+        <div className="row">
+        <div className="col-lg-6 col-md-12 col-sm-12">
+          <text className={styles.introtext}>
+            Online, fully-managable and maintainable academics management system
+            to always keep a bird's eye view into the education and task
+            management system of your organization. Academical's suite provides
+            you a complete platform to manage teachers, students and admins with
+            proper demarcation of authorization and responsibility.
+          </text>
+        </div>
+        <div className="col-lg-6 col-md-12 col-sm-12">
+          <img src={bglogo} className={styles.bglogo}/>
+        </div>
+        </div>
       </div>
 
       <div className={styles.login_container} id="form">
@@ -78,7 +73,6 @@ const Login = () => {
                   name="email"
                   onChange={handleChange}
                   value={data.email}
-				  
                   required
                 />
               </div>
@@ -93,11 +87,14 @@ const Login = () => {
                   onChange={handleChange}
                   value={data.password}
                   required
-				  
                 />
               </div>
               {error && <div className={styles.error_msg}>{error}</div>}
-              <button type="submit" class="btn btn-primary" style={{margin:15}}>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style={{ margin: 15 }}
+              >
                 Sign In
               </button>
             </form>

@@ -4,43 +4,25 @@
 	
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center
 }
 
   .logo{
-	color: rgb(255, 255, 255);
-	font-size: 40px;
+	color: rgb(1, 49, 104);
+	font-size: 45px;
 	text-align: center;
 	font-weight: bolder;
 	letter-spacing: 0.2rem;
 	padding:10px;
   }
 
-.white_btn {
-	border: none;
-	outline: none;
-	padding: 8px 0;
-	background-color: white;
-	border-radius: 20px;
-	width: 120px;
-	font-weight: bold;
-	font-size: 20px;
-	cursor: pointer;
-	margin-right: 20px;
-}
-
 .welcome{
-	font-size: 40px;
+	font-size: 30px;
 	margin: 20px;
 	font-weight:bold;
-	color: #fff;
+	color: #03297a;
 }
 
-.main_container{
-	height: 50vh;
-	background: linear-gradient(45deg,#024db1,#797ef6,#AE58F5);
-	
-}
 .body{
 	background-color: #f8f9ff;
 	margin:40px;
@@ -51,24 +33,63 @@
 	z-index: 500;
 	border-radius: 10px;
 }
+.teacwelcome{
+	font-weight: bold;
+    font-size: 26px;
+    text-align: center;
+	margin-top: 40px;
+    margin-bottom: 40px;
+    color: "#5c5c5c";
+}
+.btnpack
+	{
+		width: 100%;
+		display:flex;
+		flex-direction:row;
+		align-items: center;
+		justify-content: center;
+	  }
+
 .teacbtn{
 	font-weight: bold;
-	background-color: rgb(55, 25, 102);
+	background-color: rgb(19, 82, 201);;
 	border-width: 2px;
 	border-style: solid;
 	color: #fff;
 	border-radius: 12px;
 	margin:10px;
 	padding:15px;
-	border-color: rgb(55, 25, 102);
+	border-color:rgb(19, 82, 201);;
 }
 .teacbtn:focus{
 	border-style: solid;
 	border-width: 2px;
 	border-color: rgb(255, 255, 255);
-	color: rgb(55, 25, 102);
+	color: rgb(19, 82, 201);
 	background-color: #fff;
 }
+
+.formlabel{
+	font-weight: bold;
+	font-size: 20px;
+	color: rgb(109, 109, 109)
+}
+.textarea{
+	display:flex;
+	flex-direction:row;
+	align-items: center;
+	justify-content:center;
+  }
+  .addpage{
+	margin: 10px;
+	background-color:rgb(19,82,201);
+	outline:none;
+	border: none;
+	border-radius: 50px;
+	padding: 5;
+	color: #fff;
+	font-weight: 400,
+  }
 ul{
 	list-style-type: none;
 	padding-inline-start: 0
@@ -86,16 +107,6 @@ li {
 	display: flex;
 	flex-direction: column;
 	
-}
-input {
-	outline: none;
-	border: none;
-	width: 370px;
-	padding: 15px;
-	border-radius: 10px;
-	background-color: #edf5f3;
-	margin: 5px 0;
-	font-size: 14px;
 }
 .green_btn {
 	color: #fff;
@@ -144,5 +155,5 @@ input {
     flex-grow: 1;
   }
   input[type='checkbox']:checked{
-	display: none;
+	visibility:hidden;
   }
