@@ -26,7 +26,7 @@ class Signup extends Component {
     if (this.state.password === this.state.confirmpassword) {
       try {
         const { firstName, role, email, password } = this.state;
-        const url = "http://localhost:8080/api/users";
+        const url = "https://academical-fh52.onrender.com/api/users";
         const data = {
           firstName,
           role,

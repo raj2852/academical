@@ -48,8 +48,6 @@ class Main extends Component {
 
   componentDidMount() {
     this.getCreds();
-    this.getRecords();
-    this.getTeachertasks();
 
     //fetch all localstorage saved contents
     const draftcontent = localStorage.getItem("draft");
@@ -74,17 +72,20 @@ class Main extends Component {
   getCreds = async () => {
     const { token } = this.state;
     //alert(token);
-    const response = await fetch("http://localhost:8080/api/findUser", {
+    const response = await fetch("https://academical-fh52.onrender.com/api/findUser", {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
-    this.setState({ role: data.role, userName: data.name, userId: data.id });
+    this.setState({ role: data.role, userName: data.name, userId: data.id },()=>{
+          this.getRecords();
+          this.getTeachertasks();
+    });
   };
 
   //function to get list of all users: students,teachers,admins
   getRecords = async () => {
-    const url = "http://localhost:8080/api/getUsers";
+    const url = "https://academical-fh52.onrender.com/api/getUsers";
     const { data: res } = await axios.get(url);
     let stu = res.allusers.filter(function (ele) {
       return ele.role == "Student";
@@ -95,7 +96,7 @@ class Main extends Component {
 
   //function to fetch tasks of all users: students, teachers and admins
   getTeachertasks = async () => {
-    const url = "http://localhost:8080/api/findUploads";
+    const url = "https://academical-fh52.onrender.com/api/findUploads";
     const { data: res } = await axios.get(url);
 
     const { userId } = this.state;
@@ -109,7 +110,7 @@ class Main extends Component {
     this.setState({ createdpdfs: mydocs });
 
     //api to fetch list to pdfs assigned to a particular student
-    const response = await fetch("http://localhost:8080/api/getstutasks", {
+    const response = await fetch("https://academical-fh52.onrender.com/api/getstutasks", {
       method: "GET",
       headers: { userid: userId },
     });
@@ -207,7 +208,7 @@ class Main extends Component {
       category,
       content,
     };
-    const url = "http://localhost:8080/api/upload";
+    const url = "https://academical-fh52.onrender.com/api/upload";
     const res = await axios.post(url, body);
     console.log(res);
     if (res.status == 201) {
@@ -231,7 +232,7 @@ class Main extends Component {
   deletepdf = async (id) => {
     var result = window.confirm("This will remove from database");
     if (result) {
-      await fetch("http://localhost:8080/api/deletepdf", {
+      await fetch("https://academical-fh52.onrender.com/api/deletepdf", {
         method: "POST",
         headers: { pdfId: `${id}` },
       });
@@ -243,7 +244,7 @@ class Main extends Component {
   createassign = async (id) => {
     const { currentlyassigned } = this.state;
     const docid = id;
-    const res = await fetch("http://localhost:8080/api/assign", {
+    const res = await fetch("https://academical-fh52.onrender.com/api/assign", {
       method: "POST",
       headers: {
         pdfId: docid,
@@ -861,6 +862,25 @@ class Main extends Component {
                                     <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
                                   </svg>
                                 </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-danger"
+                                    style={{ margin: 5 }}
+                                    onClick={() =>
+                                      this.deletepdf(createdpdf._id)
+                                    }
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      fill="currentColor"
+                                      class="bi bi-trash3-fill"
+                                      viewBox="0 0 16 16"
+                                    >
+                                      <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                    </svg>
+                                  </button>
                               </td>
                               <td style={{ color: "#5c5c5c" }}>
                               <div style={{height:"95%",overflowY:"scroll"}}>

@@ -16,7 +16,7 @@ class StudentDashboard extends Component{
   //function to read pdf
   renderpdf = async (id) => {
     try {
-      const renderthis = await fetch("http://localhost:8080/api/renderpdf", {
+      const renderthis = await fetch("https://academical-fh52.onrender.com/api/renderpdf", {
         method: "POST",
         headers: { pdfid: id },
       });

@@ -20,7 +20,7 @@ class AdminDashboard extends Component {
   deleteUser = async (id) => {
     var result = window.confirm("This will remove from database");
     if (result) {
-      await fetch("http://localhost:8080/api/deleteUser", {
+      await fetch("https://academical-fh52.onrender.com/api/deleteUser", {
         method: "POST",
         headers: { UserId: `${id}` },
       });
@@ -31,7 +31,7 @@ class AdminDashboard extends Component {
   //function to read pdf
   renderpdf = async (id) => {
     try {
-      const renderthis = await fetch("http://localhost:8080/api/renderpdf", {
+      const renderthis = await fetch("https://academical-fh52.onrender.com/api/renderpdf", {
         method: "POST",
         headers: { pdfid: id },
       });
@@ -52,7 +52,7 @@ class AdminDashboard extends Component {
   createassign = async (id) => {
     const { currentlyassigned } = this.state;
     const docid = id;
-    const res = await fetch("http://localhost:8080/api/assign", {
+    const res = await fetch("https://academical-fh52.onrender.com/api/assign", {
       method: "POST",
       headers: {
         pdfId: docid,
@@ -84,7 +84,7 @@ class AdminDashboard extends Component {
   deletepdf = async (id) => {
     var result = window.confirm("This will remove from database");
     if (result) {
-      await fetch("http://localhost:8080/api/deletepdf", {
+      await fetch("https://academical-fh52.onrender.com/api/deletepdf", {
         method: "POST",
         headers: { pdfId: `${id}` },
       });
