@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./styles.module.css";
 import bglogo from "../../images/bglogo.png";
 
@@ -12,13 +12,15 @@ const Login = () => {
     setData({ ...data, [input.name]: input.value });
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const url = "https://academical-fh52.onrender.com/api/auth";
       const { data: res } = await axios.post(url, data);
       localStorage.setItem("token", res.data);
-      window.location = "/dashboard";
+      navigate("/dashboard");
     } catch (error) {
       if (
         error.response &&
