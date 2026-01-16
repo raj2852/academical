@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import styles from "./styles.module.css";
 import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 //imports for react-pdf package
 import { Document, Page, Text, Image, PDFViewer } from "@react-pdf/renderer";
@@ -43,6 +44,7 @@ class Main extends Component {
       action: false,
       actionbg: "",
       actionmessage: "",
+      logout: false
     };
   }
 
@@ -276,7 +278,7 @@ class Main extends Component {
   //function to log a user out
   handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.reload();
+    this.setState({ logout: true });
   };
 
   /////////////////////////creating react-pdf component to convert text input into pdfs
@@ -390,7 +392,10 @@ class Main extends Component {
       action,
       actionbg,
       actionmessage,
+      logout
     } = this.state;
+
+    if (logout) { return <Navigate to="/login" replace />; }
 
     return (
       <div className={styles.main_container}>
