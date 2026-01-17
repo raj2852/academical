@@ -45,5 +45,8 @@ app.use("/api/assign", assignRoutes);
 app.use("/api/getstutasks", getstutasksRoutes);
 app.use("/api/renderpdf", pdfrenderRoutes);
 
+// Health check endpoint 
+app.get("/api/health", (req, res) => { res.status(200).json({ status: "ok", message: "Backend is alive!" }); });
+
 const port = process.env.PORT || 8080;
 app.listen(port, console.log(`Listening on port ${port}...`));
