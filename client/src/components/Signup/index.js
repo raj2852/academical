@@ -1,6 +1,6 @@
 import { Component } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link , Navigate} from "react-router-dom";
 import styles from "./styles.module.css";
 
 class Signup extends Component {
@@ -12,7 +12,8 @@ class Signup extends Component {
       email: "",
       password: "",
       confirmpassword: "",
-      error: ""
+      error: "",
+      redirect: false
     };
   }
 
@@ -35,7 +36,7 @@ class Signup extends Component {
         };
         const { data: res } = await axios.post(url, data);
         localStorage.setItem("token", res.data);
-        window.location = "/dashboard";
+        this.setState({ redirect:true })
       } catch (error) {
         if (
           error.response &&
@@ -50,7 +51,10 @@ class Signup extends Component {
     }
   };
   render() {
-    const { firstName, role, password, email, confirmpassword, error } = this.state;
+    const { firstName, role, password, email, confirmpassword, error, redirect } = this.state;
+
+   if (redirect) { return <Navigate to="/dashboard" replace />; }
+
     return (
       <>
         <div className={styles.header}>
