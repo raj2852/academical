@@ -1,159 +1,416 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Navbar */
 .navbar {
-	width: 100%;
-	height: auto;
-	
-	display: flex;
-	align-items: center;
-	justify-content: center
+  width: 100%;
+  height: auto;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #472ba7 0%, #5c3bb8 100%);
+  box-shadow: 0 4px 12px rgba(71, 43, 167, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-  .logo{
-	color: rgb(1, 49, 104);
-	font-size: 45px;
-	text-align: center;
-	font-weight: bolder;
-	letter-spacing: 0.2rem;
-	padding:10px;
-  }
-
-.welcome{
-	font-size: 30px;
-	margin: 20px;
-	font-weight:bold;
-	color: #03297a;
+.logo {
+  color: white;
+  font-size: 32px;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-.body{
-	background-color: #f8f9ff;
-	margin:40px;
-	margin-bottom: 0;
-	/*position:relative;*/
-	min-height: 100vh;
-	padding:40px;
-	z-index: 500;
-	border-radius: 10px;
-}
-.teacwelcome{
-	font-weight: bold;
-    font-size: 26px;
-    text-align: center;
-	margin-top: 40px;
-    margin-bottom: 40px;
-    color: "#5c5c5c";
-}
-.btnpack
-	{
-		width: 100%;
-		display:flex;
-		flex-direction:row;
-		align-items: center;
-		justify-content: center;
-	  }
-
-.teacbtn{
-	font-weight: bold;
-	background-color: rgb(19, 82, 201);;
-	border-width: 2px;
-	border-style: solid;
-	color: #fff;
-	border-radius: 12px;
-	margin:10px;
-	padding:15px;
-	border-color:rgb(19, 82, 201);;
-}
-.teacbtn:focus{
-	border-style: solid;
-	border-width: 2px;
-	border-color: rgb(255, 255, 255);
-	color: rgb(19, 82, 201);
-	background-color: #fff;
+.welcome {
+  font-size: 24px;
+  font-weight: 600;
+  color: #472ba7;
+  margin: 0;
 }
 
-.formlabel{
-	font-weight: bold;
-	font-size: 20px;
-	color: rgb(109, 109, 109)
+/* Main Body */
+.body {
+  background-color: #f8f9fa;
+  margin: 40px;
+  margin-bottom: 0;
+  min-height: 100vh;
+  padding: 40px;
+  z-index: 500;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
-.textarea{
-	display:flex;
-	flex-direction:row;
-	align-items: center;
-	justify-content:center;
-  }
-  .addpage{
-	margin: 10px;
-	background-color:rgb(19,82,201);
-	outline:none;
-	border: none;
-	border-radius: 50px;
-	padding: 5;
-	color: #fff;
-	font-weight: 400,
-  }
-ul{
-	list-style-type: none;
-	padding-inline-start: 0
+
+/* Welcome Text */
+.teacwelcome {
+  font-weight: 700;
+  font-size: 28px;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  color: #472ba7;
 }
+
+/* Button Pack */
+.btnpack {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* Teacher Button */
+.teacbtn {
+  font-weight: 600;
+  background: linear-gradient(135deg, #472ba7 0%, #5c3bb8 100%);
+  border: 2px solid #472ba7;
+  color: white;
+  border-radius: 10px;
+  margin: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.teacbtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(71, 43, 167, 0.3);
+}
+
+.teacbtn:focus {
+  border-color: white;
+  color: #472ba7;
+  background: white;
+  outline: none;
+}
+
+/* Form Elements */
+.formlabel {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.textarea {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.addpage {
+  margin: 10px;
+  background: linear-gradient(135deg, #472ba7 0%, #5c3bb8 100%);
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addpage:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(71, 43, 167, 0.3);
+}
+
+/* List */
+ul {
+  list-style-type: none;
+  padding-inline-start: 0;
+  margin-top: 20px;
+}
+
 li {
-	background-color: #fff;
-	box-shadow: var(--box-shadow);
-	color: #333;
-	display: flex;
-	justify-content: space-between;
-	position: relative;
-	padding: 10px;
-  }
-  form {
-	display: flex;
-	flex-direction: column;
-	
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
+
+li:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Form */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Buttons */
 .green_btn {
-	color: #fff;
-	border: none;
-	outline: none;
-	padding: 12px 0;
-	background-color: rgb(0, 163, 95);
-	border-radius: 15px;
-	width: 180px;
-	font-weight: bold;
-	font-size: 16px;
-	cursor: pointer;
+  color: white;
+  border: none;
+  outline: none;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #3bb19b 0%, #32a190 100%);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
+
+.green_btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 177, 155, 0.3);
+}
+
 .blue_btn {
-	color: #fff;
-	border: none;
-	outline: none;
-	padding: 12px;
-	margin-left: 10px;
-	background-color: rgb(0, 119, 134);
-	border-radius: 15px;
-	width: auto;
-	font-weight: bold;
-	font-size: 16px;
-	cursor: pointer;
+  color: white;
+  border: none;
+  outline: none;
+  padding: 12px 24px;
+  margin-left: 10px;
+  background: linear-gradient(135deg, #472ba7 0%, #5c3bb8 100%);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.teacheader{
-	color:#5c5c5c;
-	font-size: 30px;
-	letter-spacing: 0.2rem;
-	font-weight: bold;
+
+.blue_btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(71, 43, 167, 0.3);
 }
-.assign{
-	display: flex;
-	flex-direction: row;
-	justify-content: space-around;
-	align-items: center;
+
+/* Teacher Header */
+.teacheader {
+  color: #472ba7;
+  font-size: 28px;
+  letter-spacing: 0.2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
 }
+
+/* Assign */
+.assign {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* Page */
 .page {
-    flex-Direction: 'row';
-    background-color: '#E4E4E4'
+  flex-direction: row;
+  background-color: #f5f7fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+/* Section */
+.section {
+  margin: 15px;
+  padding: 15px;
+  flex-grow: 1;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Checkbox */
+input[type="checkbox"]:checked {
+  visibility: hidden;
+}
+
+/* Responsive Design */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 16px 24px;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
   }
- .section {
-    margin: 10;
-    padding: 10;
-    flex-grow: 1;
+
+  .logo {
+    font-size: 24px;
   }
-  input[type='checkbox']:checked{
-	visibility:hidden;
+
+  .welcome {
+    font-size: 18px;
   }
+
+  .body {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .teacwelcome {
+    font-size: 22px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .formlabel {
+    font-size: 14px;
+  }
+
+  .teacheader {
+    font-size: 22px;
+  }
+
+  .blue_btn {
+    margin-left: 5px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 14px 16px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .welcome {
+    font-size: 16px;
+  }
+
+  .body {
+    margin: 12px;
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .teacwelcome {
+    font-size: 18px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .btnpack {
+    gap: 10px;
+  }
+
+  .teacbtn {
+    margin: 6px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+
+  .formlabel {
+    font-size: 13px;
+  }
+
+  .textarea {
+    gap: 10px;
+  }
+
+  .addpage {
+    margin: 8px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+
+  li {
+    padding: 12px;
+    margin-bottom: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .green_btn,
+  .blue_btn {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+
+  .blue_btn {
+    margin-left: 0;
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  .teacheader {
+    font-size: 18px;
+  }
+
+  .assign {
+    gap: 10px;
+  }
+
+  .section {
+    margin: 10px;
+    padding: 12px;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 360px) {
+  .navbar {
+    padding: 12px 10px;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  .body {
+    margin: 8px;
+    padding: 12px;
+  }
+
+  .teacbtn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .green_btn,
+  .blue_btn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+}

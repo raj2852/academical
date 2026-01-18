@@ -1102,7 +1102,6 @@ class Main extends Component {
             students={students}
             onUserDeleted={this.getRecords}
             onPdfDeleted={this.getTeachertasks}
-            onRefreshStudents={this.getRecords}
           />
         )}
       </div>
