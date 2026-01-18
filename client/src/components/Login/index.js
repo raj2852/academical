@@ -7,6 +7,7 @@ import bglogo from "../../images/bglogo.png";
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
@@ -16,6 +17,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const url = "https://academical-fh52.onrender.com/api/auth";
       const { data: res } = await axios.post(url, data);
@@ -29,93 +31,117 @@ const Login = () => {
       ) {
         setError(error.response.data.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <>
-      <div className={styles.header}>
-        <text className={styles.logo}>Academical</text>
-        <a href="#form">
-          <button type="button" class="btn btn-outline-primary">
-            Get started
-          </button>
+    <div className={styles.wrapper}>
+      {/* Header */}
+      <header className={styles.header}>
+        <div className={styles.logo}>Academical</div>
+        <a href="#form" className={styles.getStartedBtn}>
+          Get started
         </a>
-      </div>
-      <div className="container" style={{marginTop:10}}>
-        <div className="row">
-        <div className="col-lg-6 col-md-12 col-sm-12">
-          <text className={styles.introtext}>
-            Online, fully-managable and maintainable academics management system
-            to always keep a bird's eye view into the education and task
-            management system of your organization. Academical's suite provides
-            you a complete platform to manage teachers, students and admins with
-            proper demarcation of authorization and responsibility.
-          </text>
-        </div>
-        <div className="col-lg-6 col-md-12 col-sm-12">
-          <img src={bglogo} className={styles.bglogo}/>
-        </div>
-        </div>
-      </div>
+      </header>
 
-      <div className={styles.login_container} id="form">
-        <div className={styles.login_form_container}>
-          <div className={styles.left}>
-            <form className={styles.form_container} onSubmit={handleSubmit}>
-              <h1>Login to Your Account</h1>
-              <div>
-                <label for="exampleInputEmail1">Email address</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
-                  placeholder="Enter email"
-                  name="email"
-                  onChange={handleChange}
-                  value={data.email}
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="exampleInputPassword1"
-                  placeholder="Password"
-                  name="password"
-                  onChange={handleChange}
-                  value={data.password}
-                  required
-                />
-              </div>
-              {error && <div className={styles.error_msg}>{error}</div>}
-              <button
-                type="submit"
-                class="btn btn-primary"
-                style={{ margin: 15 }}
-              >
-                Sign In
-              </button>
-            </form>
+      {/* Hero Section */}
+      <section className={styles.heroSection}>
+        <div className={styles.heroContent}>
+          <div className={styles.heroText}>
+            <h2>Welcome to Academical</h2>
+            <p>
+              Academical is a purpose-built platform designed to support the everyday needs of educators and learners. It streamlines classroom management by helping teachers assign tasks, monitor progress, and stay organized, while giving students a clear view of their responsibilities and achievements.
+            </p>
+            <p style={{ fontSize: "14px", color: "#666" }}>
+              With a secure, easy-to-use interface, Academical fosters collaboration, accountability, and academic growth — making it a reliable companion for schools, coaching centers, and learning communities.
+            </p>
           </div>
-          <div className={styles.right}>
-            <h1>Don't have an account yet? Sign up</h1>
-            <Link to="/signup">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                style={{ backgroundColor: "#fff", color: "green" }}
-              >
-                Sign Up
-              </button>
-            </Link>
+          <div className={styles.heroImage}>
+            <img src={bglogo} alt="Academical" />
           </div>
         </div>
-      </div>
-    </>
+      </section>
+
+      {/* Login Section */}
+      <section className={styles.loginSection} id="form">
+        <div className={styles.loginContainer}>
+          {/* Left Side - Form */}
+          <div className={styles.loginLeft}>
+            <div className={styles.formWrapper}>
+              <h1 className={styles.formTitle}>Login to Your Account</h1>
+              
+              {error && (
+                <div className={styles.errorAlert}>
+                  <span className={styles.errorIcon}>⚠</span>
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="email" className={styles.label}>
+                    Email Address
+                  </label>
+                  <div className={styles.inputWrapper}>
+                    <span className={styles.inputIcon}>✉</span>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      placeholder="Enter your email"
+                      onChange={handleChange}
+                      value={data.email}
+                      className={styles.input}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="password" className={styles.label}>
+                    Password
+                  </label>
+                  <div className={styles.inputWrapper}>
+                    <span className={styles.inputIcon}>🔒</span>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      placeholder="Enter your password"
+                      onChange={handleChange}
+                      value={data.password}
+                      className={styles.input}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className={styles.submitBtn}
+                  disabled={loading}
+                >
+                  {loading ? "Signing In..." : "Sign In"}
+                </button>
+              </form>
+            </div>
+          </div>
+
+          {/* Right Side - Sign Up */}
+          <div className={styles.loginRight}>
+            <div className={styles.signupCard}>
+              <h2>New Here?</h2>
+              <p>Join thousands of educators and students already using Academical to achieve academic excellence.</p>
+              <Link to="/signup" className={styles.signupBtn}>
+                Create Account
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 };
 
